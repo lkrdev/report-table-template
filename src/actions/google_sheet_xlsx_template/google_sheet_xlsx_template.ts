@@ -1085,6 +1085,21 @@ export class GoogleSheetXlsxTemplateAction extends Hub.OAuthActionV2 {
       const dimensions = context.fields?.dimensions ? context.fields.dimensions : []
       const measures = context.fields?.measures ? context.fields.measures : []
       const allFields = [...dimensions, ...measures]
+
+      // Dynamic column label lookup: fields._columns[idx].label
+      if (fieldName.startsWith("_columns[")) {
+        const colIdxMatch = fieldName.match(/^_columns\[(\d+)\]$/)
+        if (colIdxMatch) {
+          const idx = parseInt(colIdxMatch[1], 10)
+          const colField = allFields[idx]
+          if (!colField) {
+            errors?.add(`{{ ${expr} }}`)
+            return ""
+          }
+          return colField.label
+        }
+      }
+
       const field = allFields.find((f) => f.name === fieldName)
       if (!field) {
         errors?.add(`{{ ${expr} }}`)

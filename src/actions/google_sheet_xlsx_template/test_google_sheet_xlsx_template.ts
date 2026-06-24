@@ -208,4 +208,39 @@ describe(`${action.constructor.name} unit tests`, () => {
     chai.expect(sheet.getCell("D11").value).to.equal(4214) // html stripped and parsed as number
     chai.expect(typeof sheet.getCell("D11").value).to.equal("number") // verify type is number
   })
+
+  it("resolves fields._columns[idx].label dynamically by index", () => {
+    const mockContext = {
+      fields: {
+        dimensions: [
+          { name: "users.created_week", label: "Created Week" },
+          { name: "users.state", label: "State" },
+        ],
+        measures: [
+          { name: "users.count", label: "Count" },
+        ],
+      },
+    }
+    const errors = new Set<string>()
+
+    // Test dimension index 0
+    const val0 = (action as any).evaluateExpression("fields._columns[0].label", mockContext, {}, errors)
+    chai.expect(val0).to.equal("Created Week")
+    chai.expect(errors.size).to.equal(0)
+
+    // Test dimension index 1
+    const val1 = (action as any).evaluateExpression("fields._columns[1].label", mockContext, {}, errors)
+    chai.expect(val1).to.equal("State")
+    chai.expect(errors.size).to.equal(0)
+
+    // Test measure index 2
+    const val2 = (action as any).evaluateExpression("fields._columns[2].label", mockContext, {}, errors)
+    chai.expect(val2).to.equal("Count")
+    chai.expect(errors.size).to.equal(0)
+
+    // Test out of bounds index 3
+    const val3 = (action as any).evaluateExpression("fields._columns[3].label", mockContext, {}, errors)
+    chai.expect(val3).to.equal("")
+    chai.expect(errors.has("{{ fields._columns[3].label }}")).to.be.true
+  })
 })
