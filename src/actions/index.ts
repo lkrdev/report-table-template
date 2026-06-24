@@ -1,2 +1,1 @@
-import "./excel_template/excel_template"
-import "./google/docs/google_docs"
+import "./google_sheet_xlsx_template/google_sheet_xlsx_template"

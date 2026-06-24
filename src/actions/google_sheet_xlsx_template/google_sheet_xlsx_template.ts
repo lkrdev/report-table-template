@@ -10,10 +10,10 @@ import Drive = drive_v3.Drive
 import { getHttpErrorType } from "../../error_types/utils"
 import * as Hub from "../../hub"
 import { Error, errorWith } from "../../hub/action_response"
-import { DomainValidator } from "../google/docs/domain_validator"
+import { DomainValidator } from "./domain_validator"
 
 const sanitizeFilename = require("sanitize-filename")
-const LOG_PREFIX = "[EXCEL_TEMPLATE]"
+const LOG_PREFIX = "[GOOGLE_SHEET_XLSX_TEMPLATE]"
 const FOLDERID_REGEX = /\/folders\/(?<folderId>[^\/?]+)/
 
 interface OauthState {
@@ -21,10 +21,10 @@ interface OauthState {
   stateurl?: string
 }
 
-export class ExcelTemplateAction extends Hub.OAuthActionV2 {
-  name = "excel_template"
-  label = "Excel Template"
-  iconName = "google/docs/docs.svg"
+export class GoogleSheetXlsxTemplateAction extends Hub.OAuthActionV2 {
+  name = "google-sheet-xlsx-template"
+  label = "Google Sheets Excel Template"
+  iconName = "google_sheet_xlsx_template/xlsx_icon.svg"
   description = "Generate an Excel spreadsheet from a template using dynamic data."
   supportedActionTypes = [Hub.ActionType.Query]
   supportedFormats = [Hub.ActionFormat.JsonDetailLiteStream]
@@ -476,7 +476,7 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
           error = {
             ...error,
             http_code: e.code,
-            message: `${errorType.description} [EXCEL_TEMPLATE] ${e.errors[0].message}`,
+            message: `${errorType.description} [GOOGLE_SHEET_XLSX_TEMPLATE] ${e.errors[0].message}`,
           }
         }
         winston.error("Can not sign in to Google", {
@@ -1206,4 +1206,4 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
 }
 
 // ponytail: register the action in the hub
-Hub.addAction(new ExcelTemplateAction())
+Hub.addAction(new GoogleSheetXlsxTemplateAction())

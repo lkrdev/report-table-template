@@ -22,5 +22,5 @@ import "./test_oauth_action"
 import "./test_server"
 import "./test_smoke"
 
-import "../src/actions/excel_template/test_excel_template"
-import "../src/actions/google/docs/test_google_docs"
+import "../src/actions/google_sheet_xlsx_template/test_domain_validator"
+import "../src/actions/google_sheet_xlsx_template/test_google_sheet_xlsx_template"

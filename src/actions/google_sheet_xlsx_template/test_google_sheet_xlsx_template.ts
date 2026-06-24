@@ -6,9 +6,9 @@ import * as path from "path"
 import * as sinon from "sinon"
 import { Readable } from "stream"
 import * as Hub from "../../hub"
-import { ExcelTemplateAction } from "./excel_template"
+import { GoogleSheetXlsxTemplateAction } from "./google_sheet_xlsx_template"
 
-const action = new ExcelTemplateAction()
+const action = new GoogleSheetXlsxTemplateAction()
 action.executeInOwnProcess = false
 
 describe(`${action.constructor.name} unit tests`, () => {

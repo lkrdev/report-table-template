@@ -82,7 +82,7 @@ To allow Looker users to authenticate with Google Drive and Google Docs, you mus
 
 You can deploy this integration directly to Cloud Run using Google Cloud Shell. This opens Google Cloud Shell, clones the repository, and runs the interactive setup script:
 
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_git_repo=https://github.com/lkrdev/report-table-template)
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?shellonly=true&cloudshell_git_repo=https://github.com/lkrdev/google-sheets-excel-template)
 
 After the Cloud Shell environment finishes loading, execute the deployment script. You can run it interactively (the script will prompt you for any missing options) or run it fully unattended by passing command-line arguments:
 

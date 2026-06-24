@@ -3,14 +3,14 @@
 We have successfully implemented the first phase of the **Excel Template Action**. The action is fully registered, compiling, linting, and passing all tests (72 passing).
 
 ## 1. Action Specification
-* **Action Name:** `excel_template` (Registered in [index.ts](file:///usr/local/google/home/bryanweber/lkrdev/report-table-template/src/actions/index.ts))
-* **Implementation File:** [excel_template.ts](file:///usr/local/google/home/bryanweber/lkrdev/report-table-template/src/actions/excel_template/excel_template.ts)
+* **Action Name:** `google-sheet-xlsx-template` (Registered in [index.ts](file:///usr/local/google/home/bryanweber/lkrdev/google-sheets-excel-template/src/actions/index.ts))
+* **Implementation File:** [google_sheet_xlsx_template.ts](file:///usr/local/google/home/bryanweber/lkrdev/google-sheets-excel-template/src/actions/google_sheet_xlsx_template/google_sheet_xlsx_template.ts)
 * **Format Supported:** `json_detail_lite_stream` (chosen for metadata, filters, and structured indexing)
 * **Download Settings:** `url` (streaming to handle large datasets efficiently)
 * **Icon:** Reused `google/docs/docs.svg` as a placeholder
 
 ## 2. Template Parsing Results
-We parsed [template-example.xlsx](file:///usr/local/google/home/bryanweber/lkrdev/report-table-template/template-example.xlsx) using `sheetjs`. Here are the handlebar expressions and where they map in our harvested [example-json_detail_lite_stream.json](file:///usr/local/google/home/bryanweber/lkrdev/report-table-template/example-json_detail_lite_stream.json):
+We parsed [template-example.xlsx](file:///usr/local/google/home/bryanweber/lkrdev/google-sheets-excel-template/template-example.xlsx) using `sheetjs`. Here are the handlebar expressions and where they map in our harvested [example-json_detail_lite_stream.json](file:///usr/local/google/home/bryanweber/lkrdev/google-sheets-excel-template/example-json_detail_lite_stream.json):
 
 | Cell | Raw Template Value | Target Mapping Source | Typo Correction |
 | :--- | :--- | :--- | :--- |
@@ -65,8 +65,8 @@ When Looker executes the action, we stream the payload and save a fully aggregat
 ```
 
 ## 4. Green Test Suite Status
-We have written a comprehensive unit test suite in [test_excel_template.ts](file:///usr/local/google/home/bryanweber/lkrdev/report-table-template/src/actions/excel_template/test_excel_template.ts) that:
+We have written a comprehensive unit test suite in [test_google_sheet_xlsx_template.ts](file:///usr/local/google/home/bryanweber/lkrdev/google-sheets-excel-template/src/actions/google_sheet_xlsx_template/test_google_sheet_xlsx_template.ts) that:
 1. Mocks a streaming request to verify harvesting.
-2. Streams the real [example-json_detail_lite_stream.json](file:///usr/local/google/home/bryanweber/lkrdev/report-table-template/example-json_detail_lite_stream.json) on disk to assert that all 183 rows, fields, filters, and values are parsed and saved with 100% correctness.
+2. Streams the real [example-json_detail_lite_stream.json](file:///usr/local/google/home/bryanweber/lkrdev/google-sheets-excel-template/example-json_detail_lite_stream.json) on disk to assert that all 183 rows, fields, filters, and values are parsed and saved with 100% correctness.
 
 All compilation, linting, and Mocha tests are now passing successfully!

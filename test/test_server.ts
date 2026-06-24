@@ -63,7 +63,7 @@ describe("the action hub", () => {
       .end((_err, res) => {
         stub.restore()
         chai.expect(res).to.have.status(200)
-        chai.expect(res.body.integrations.length).to.equal(2)
+        chai.expect(res.body.integrations.length).to.equal(1)
         done()
       })
   })
@@ -77,7 +77,7 @@ describe("the action hub", () => {
       .end((_err, res) => {
         stub.restore()
         chai.expect(res).to.have.status(200)
-        chai.expect(res.body.integrations.length).to.equal(2)
+        chai.expect(res.body.integrations.length).to.equal(1)
         done()
       })
   })
@@ -91,7 +91,7 @@ describe("the action hub", () => {
       .end((_err, res) => {
         stub.restore()
         chai.expect(res).to.have.status(200)
-        chai.expect(res.body.integrations.length).to.equal(2)
+        chai.expect(res.body.integrations.length).to.equal(1)
         done()
       })
   })
