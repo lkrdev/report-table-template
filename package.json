@@ -5,10 +5,8 @@
   "main": "lib/index",
   "scripts": {
     "start": "./node_modules/.bin/ts-node -- ./src/boot.ts",
-    "start:tunnel": "./tunnel.sh yarn start",
     "build": "rm -rf lib; ./node_modules/.bin/tsc -d -p tsconfig.npm.json",
     "dev": "./node_modules/.bin/nodemon --exec ./node_modules/.bin/ts-node --type-check -- ./src/boot.ts",
-    "dev:tunnel": "./tunnel.sh yarn dev",
     "debug": "./node_modules/.bin/nodemon --exec node --inspect --trace-warnings -r ./node_modules/ts-node/register -- ./src/boot.ts",
     "debug-trace": "./node_modules/.bin/nodemon --exec node --inspect --trace-sync-io -r ./node_modules/ts-node/register -- ./src/boot.ts",
     "test-dev": "./node_modules/.bin/nodemon --exec \"yarn test || true\"",

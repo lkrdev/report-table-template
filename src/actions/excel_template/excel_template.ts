@@ -134,11 +134,12 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
         }
 
         // 3. Resolve filename
+        const errors = new Set<string>()
         const suggestedFilename = request.suggestedFilename()
         const rawFilename = request.formParams.filename
           ? request.formParams.filename
           : (suggestedFilename ? suggestedFilename : "Report")
-        const resolvedFilename = this.resolveString(rawFilename, context)
+        const resolvedFilename = this.resolveString(rawFilename, context, undefined, errors)
         const sanitizedFilename = sanitizeFilename(resolvedFilename)
 
         // 4. Load Excel template
@@ -148,7 +149,14 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
 
         // 5. Populate template with data
         winston.info(`${LOG_PREFIX} Populating Excel template`, { webhookId: request.webhookId })
-        this.populateTemplate(workbook, context)
+        this.populateTemplate(workbook, context, errors)
+
+        if (errors.size > 0) {
+          winston.info(`${LOG_PREFIX} Creating _errors sheet with ${errors.size} errors`, { webhookId: request.webhookId })
+          const errorRows = Array.from(errors).map((err) => [`Could not find ${err}`])
+          const errorsSheet = XLSX.utils.aoa_to_sheet(errorRows)
+          XLSX.utils.book_append_sheet(workbook, errorsSheet, "_errors")
+        }
 
         // 6. Write to Buffer
         const outputBuffer = XLSX.write(workbook, { type: "buffer", bookType: "xlsx" })
@@ -774,7 +782,7 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
 
   // --- Spreadsheet Population Engine (SheetJS) ---
 
-  private populateTemplate(workbook: XLSX.WorkBook, context: any) {
+  private populateTemplate(workbook: XLSX.WorkBook, context: any, errors: Set<string>) {
     const sheetName = workbook.SheetNames[0]
     const sheet = workbook.Sheets[sheetName] as XLSX.WorkSheet | undefined
     if (!sheet) { return }
@@ -814,7 +822,7 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
         for (const [colStr, cellTpl] of Object.entries(cellTemplates)) {
           const c = parseInt(colStr, 10)
           const newCell = { ...cellTpl }
-          this.resolveCell(newCell, context, rowData)
+          this.resolveCell(newCell, context, rowData, errors)
           const cellAddress = XLSX.utils.encode_cell({ r: targetRowIdx, c })
           sheet[cellAddress] = newCell
         }
@@ -824,7 +832,7 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
     // 5. Resolve all other non-repeating cells in place
     for (const key of Object.keys(sheet)) {
       if (key.startsWith("!")) { continue }
-      this.resolveCell(sheet[key], context)
+      this.resolveCell(sheet[key], context, undefined, errors)
     }
   }
 
@@ -875,14 +883,14 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
     sheet["!ref"] = XLSX.utils.encode_range(range)
   }
 
-  private resolveCell(cell: XLSX.CellObject | undefined, context: any, rowData?: any) {
+  private resolveCell(cell: XLSX.CellObject | undefined, context: any, rowData?: any, errors?: Set<string>) {
     if (!cell || cell.v === undefined) { return }
     const strVal = String(cell.v)
 
     const match = strVal.match(/^\{\{([^}]+)\}\}$/)
     if (match) {
       const expr = match[1]
-      const resolved = this.evaluateExpression(expr, context, rowData)
+      const resolved = this.evaluateExpression(expr, context, rowData, errors)
       if (resolved !== "" && !isNaN(Number(resolved))) {
         cell.t = "n"
         cell.v = Number(resolved)
@@ -892,30 +900,39 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
       }
     } else if (strVal.includes("{{")) {
       cell.t = "s"
-      cell.v = this.resolveString(strVal, context, rowData)
+      cell.v = this.resolveString(strVal, context, rowData, errors)
     }
   }
 
-  private resolveString(str: string, context: any, rowData?: any): string {
+  private resolveString(str: string, context: any, rowData?: any, errors?: Set<string>): string {
     return str.replace(/\{\{([^}]+)\}\}/g, (_, expr) => {
-      return this.evaluateExpression(expr, context, rowData)
+      return this.evaluateExpression(expr, context, rowData, errors)
     })
   }
 
-  private evaluateExpression(expr: string, context: any, rowData?: any): string {
+  private evaluateExpression(expr: string, context: any, rowData?: any, errors?: Set<string>): string {
     expr = expr.trim()
 
     // 1. _built_in
     if (expr.startsWith("_built_in.")) {
       const key = expr.substring("_built_in.".length)
       const val = context._built_in?.[key]
-      return val !== undefined && val !== null ? String(val) : ""
+      if (val === undefined || val === null) {
+        errors?.add(`{{ ${expr} }}`)
+        return ""
+      }
+      return String(val)
     }
 
     // 2. _filters
     if (expr.startsWith("_filters.")) {
       const key = expr.substring("_filters.".length)
-      const val = context.appliedFilters?.[key]?.value
+      const filter = context.appliedFilters?.[key]
+      if (filter === undefined) {
+        errors?.add(`{{ ${expr} }}`)
+        return ""
+      }
+      const val = filter.value
       return val !== undefined && val !== null ? String(val) : ""
     }
 
@@ -926,7 +943,11 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
       const measures = context.fields?.measures ? context.fields.measures : []
       const allFields = [...dimensions, ...measures]
       const field = allFields.find((f) => f.name === fieldName)
-      return field ? field.label : ""
+      if (!field) {
+        errors?.add(`{{ ${expr} }}`)
+        return ""
+      }
+      return field.label
     }
 
     // 4. data[i].path (explicit row lookup)
@@ -935,34 +956,65 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
       const idx = parseInt(dataIndexedMatch[1], 10)
       const pathStr = dataIndexedMatch[2]
       const row = context.data?.[idx]
-      if (!row) { return "" }
-      const val = row[pathStr]?.value
+      if (!row) {
+        errors?.add(`{{ ${expr} }}`)
+        return ""
+      }
+      const valObj = row[pathStr]
+      if (valObj === undefined) {
+        errors?.add(`{{ ${expr} }}`)
+        return ""
+      }
+      const val = valObj.value
       return val !== undefined && val !== null ? String(val) : ""
     }
 
     // 5. data._columns[i] (dynamic column lookup)
     if (expr.startsWith("data._columns[")) {
       const colIdxMatch = expr.match(/^data\._columns\[(\d+)\]$/)
-      if (colIdxMatch && rowData) {
+      if (colIdxMatch) {
         const idx = parseInt(colIdxMatch[1], 10)
         const dimensions = context.fields?.dimensions ? context.fields.dimensions : []
         const measures = context.fields?.measures ? context.fields.measures : []
         const allFields = [...dimensions, ...measures]
         const fieldName = allFields[idx]?.name
-        if (!fieldName) { return "" }
-        const val = rowData[fieldName]?.value
-        return val !== undefined && val !== null ? String(val) : ""
+        if (!fieldName) {
+          errors?.add(`{{ ${expr} }}`)
+          return ""
+        }
+        if (rowData) {
+          const valObj = rowData[fieldName]
+          if (valObj === undefined) {
+            errors?.add(`{{ ${expr} }}`)
+            return ""
+          }
+          const val = valObj.value
+          return val !== undefined && val !== null ? String(val) : ""
+        }
       }
+      errors?.add(`{{ ${expr} }}`)
       return ""
     }
 
     // 6. data.path (row-level)
-    if (expr.startsWith("data.") && rowData) {
-      const pathStr = expr.substring("data.".length)
-      const val = rowData[pathStr]?.value
-      return val !== undefined && val !== null ? String(val) : ""
+    if (expr.startsWith("data.")) {
+      if (rowData) {
+        const pathStr = expr.substring("data.".length)
+        const valObj = rowData[pathStr]
+        if (valObj === undefined) {
+          errors?.add(`{{ ${expr} }}`)
+          return ""
+        }
+        const val = valObj.value
+        return val !== undefined && val !== null ? String(val) : ""
+      } else {
+        errors?.add(`{{ ${expr} }}`)
+        return ""
+      }
     }
 
+    // Default: unrecognized/unresolved
+    errors?.add(`{{ ${expr} }}`)
     return ""
   }
 

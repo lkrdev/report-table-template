@@ -31,27 +31,8 @@ if ! command -v cloudflared &> /dev/null; then
     fi
 fi
 
-# Check if the first argument is a port number
-PORT_ARG=""
-if [[ "$1" =~ ^[0-9]+$ ]]; then
-    PORT_ARG="$1"
-    shift
-fi
-
-# Determine the port to tunnel. Precedence:
-# 1. Command line argument (if it was a number)
-# 2. PORT environment variable (already present as $PORT)
-# 3. PORT from .env file
-# 4. Default to 8080
-PORT="${PORT_ARG:-$PORT}"
-if [ -z "$PORT" ] && [ -f ".env" ]; then
-    # Parse PORT from .env file safely without sourcing it
-    DOTENV_PORT=$(grep -E '^\s*PORT\s*=' .env | cut -d= -f2- | tr -d '[:space:]' | tr -d '"' | tr -d "'")
-    if [ -n "$DOTENV_PORT" ]; then
-        PORT=$DOTENV_PORT
-    fi
-fi
-PORT=${PORT:-8080}
+# Determine the port to tunnel (default to 8080 if not provided)
+PORT=${1:-8080}
 echo "Starting Cloudflare tunnel to http://localhost:$PORT..."
 
 # Create a temporary file to capture logs so we can extract the URL
@@ -87,18 +68,10 @@ if [ -n "$URL" ]; then
     echo "Tunnel active!"
     echo "URL: $URL"
     echo "========================================"
+    echo "Press Ctrl+C to stop the tunnel."
     
-    # If a command was passed, run it with ACTION_HUB_BASE_URL set to the tunnel URL
-    if [ $# -gt 0 ]; then
-        export ACTION_HUB_BASE_URL="$URL"
-        echo "Running command: $@"
-        echo "----------------------------------------"
-        "$@"
-    else
-        echo "Press Ctrl+C to stop the tunnel."
-        # Wait for the background tunnel process to terminate (keeps the script running)
-        wait "$TUNNEL_PID"
-    fi
+    # Wait for the background tunnel process to terminate (keeps the script running)
+    wait "$TUNNEL_PID"
 else
     echo "Error: Failed to retrieve tunnel URL. Logs:"
     cat "$LOG_FILE"

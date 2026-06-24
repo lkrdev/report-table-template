@@ -112,5 +112,20 @@ describe(`${action.constructor.name} unit tests`, () => {
     // Shifted: "Footer" is at row 194, "Bryan is Kewl" is at row 195
     chai.expect(sheet.A194?.v).to.equal("Footer")
     chai.expect(sheet.A195?.v).to.equal("Bryan is Kewl")
+
+    // Assert that the _errors sheet exists and contains the expected unresolved mustaches
+    const errorsSheetName = workbook.SheetNames.find((name) => name === "_errors")
+    chai.expect(errorsSheetName).to.exist
+    const errorsSheet = workbook.Sheets[errorsSheetName!]
+    const errorsData = XLSX.utils.sheet_to_json(errorsSheet, { header: 1 }) as string[][]
+    
+    const errorMessages = errorsData.map((row) => row[0])
+    chai.expect(errorMessages).to.have.lengthOf(6)
+    chai.expect(errorMessages).to.include("Could not find {{ data._columns[2] }}")
+    chai.expect(errorMessages).to.include("Could not find {{ data.users.state }}")
+    chai.expect(errorMessages).to.include("Could not find {{ data.order_items.count }}")
+    chai.expect(errorMessages).to.include("Could not find {{ _filters.users.state }}")
+    chai.expect(errorMessages).to.include("Could not find {{ data[0].products.brand }}")
+    chai.expect(errorMessages).to.include("Could not find {{ fields.users.state.label }}")
   })
 })
