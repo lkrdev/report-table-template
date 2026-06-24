@@ -6,7 +6,7 @@ on:
 
 env:
   REGION: us-central1
-  SERVICE_NAME: excel-template-action
+  SERVICE_NAME: google-sheets-excel-template
   APP_NAME: looker-action
   TAG: ${{ github.event.release.tag_name }}
 
