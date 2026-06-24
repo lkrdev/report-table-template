@@ -33,7 +33,7 @@ describe(`${action.constructor.name} unit tests`, () => {
       files: {
         create: driveSpy,
         get: sinon.spy(async () => {
-          const realTemplatePath = path.resolve(__dirname, "../../../template-example.xlsx")
+          const realTemplatePath = path.resolve(__dirname, "../../../simulate/template-example.xlsx")
           const readStream = fs.createReadStream(realTemplatePath)
           return { data: readStream }
         }),
@@ -100,32 +100,31 @@ describe(`${action.constructor.name} unit tests`, () => {
     chai.expect(images).to.have.lengthOf(1)
     const img = images[0]
     chai.expect(img.imageId).to.exist
-    chai.expect(Math.floor(img.range.tl.col)).to.equal(3) // Column D (0-indexed)
+    chai.expect(Math.floor(img.range.tl.col)).to.equal(0) // Column A (0-indexed)
     chai.expect(Math.floor(img.range.tl.row)).to.equal(0) // Row 1 (0-indexed)
 
     // Assert standard cells
-    chai.expect(sheet.getCell("B3").value).to.be.a("string") // run_at timestamp
-    chai.expect(sheet.getCell("B4").value).to.equal("Real File Scheduled Plan") // title
-    chai.expect(sheet.getCell("B6").value).to.be.oneOf([null, undefined, ""])
+    chai.expect(sheet.getCell("B4").value).to.be.a("string") // run_at timestamp
+    chai.expect(sheet.getCell("B5").value).to.equal("Real File Scheduled Plan") // title
     chai.expect(sheet.getCell("B7").value).to.be.oneOf([null, undefined, ""])
-    chai.expect(sheet.getCell("C8").value).to.be.oneOf([null, undefined, ""])
+    chai.expect(sheet.getCell("B8").value).to.be.oneOf([null, undefined, ""])
+    chai.expect(sheet.getCell("C10").value).to.be.oneOf([null, undefined, ""])
 
     // Assert repeating rows (should have 183 rows of data)
-    // Row 9 is the first row of data
-    chai.expect(sheet.getCell("A9").value).to.equal("2022-12-26") // order_items.created_week
-    chai.expect(sheet.getCell("B9").value).to.be.oneOf([null, undefined, ""]) // columns[2] (out of bounds)
-    chai.expect(sheet.getCell("C9").value).to.be.oneOf([null, undefined, ""]) // data.users.state (not in query)
-    chai.expect(sheet.getCell("D9").value).to.be.oneOf([null, undefined, ""]) // data.order_items.count (not in query)
+    // Row 11 is the first row of data
+    chai.expect(sheet.getCell("A11").value).to.equal("2022-12-26") // order_items.created_week
+    chai.expect(sheet.getCell("B11").value).to.be.oneOf([null, undefined, ""]) // columns[2] (out of bounds)
+    chai.expect(sheet.getCell("C11").value).to.be.oneOf([null, undefined, ""]) // data.users.state (not in query)
+    chai.expect(sheet.getCell("D11").value).to.be.oneOf([null, undefined, ""]) // data.order_items.count (not in query)
 
-    // Assert the last row of data (row 191)
+    // Assert the last row of data (row 193)
     // index 182 in the payload is the 183rd row
-    chai.expect(sheet.getCell("A191").value).to.equal("2026-06-22")
+    chai.expect(sheet.getCell("A193").value).to.equal("2026-06-22")
 
     // Assert footer rows shifted down by 182 rows
-    // Original template: "Footer" was at row 12, "Bryan is Kewl" was at row 13
-    // Shifted: "Footer" is at row 194, "Bryan is Kewl" is at row 195
-    chai.expect(sheet.getCell("A194").value).to.equal("Footer")
-    chai.expect(sheet.getCell("A195").value).to.equal("Bryan is Kewl")
+    // Original template: "This is a footer!" was at row 15
+    // Shifted: "This is a footer!" is at row 197
+    chai.expect(sheet.getCell("A197").value).to.equal("This is a footer!")
 
     // Assert that the _errors sheet exists and contains the expected unresolved mustaches
     const errorsSheet = workbook.getWorksheet("_errors")
@@ -203,10 +202,10 @@ describe(`${action.constructor.name} unit tests`, () => {
     const sheet = workbook.worksheets[0]
     chai.expect(sheet).to.exist
 
-    // Assert repeating rows (should have 1 row of data starting at row 9)
-    chai.expect(sheet.getCell("A9").value).to.equal("2026-06-24") // html stripped
-    chai.expect(sheet.getCell("C9").value).to.equal("California") // html stripped
-    chai.expect(sheet.getCell("D9").value).to.equal(4214) // html stripped and parsed as number
-    chai.expect(typeof sheet.getCell("D9").value).to.equal("number") // verify type is number
+    // Assert repeating rows (should have 1 row of data starting at row 11)
+    chai.expect(sheet.getCell("A11").value).to.equal("2026-06-24") // html stripped
+    chai.expect(sheet.getCell("C11").value).to.equal("California") // html stripped
+    chai.expect(sheet.getCell("D11").value).to.equal(4214) // html stripped and parsed as number
+    chai.expect(typeof sheet.getCell("D11").value).to.equal("number") // verify type is number
   })
 })

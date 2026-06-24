@@ -10,20 +10,33 @@ We have successfully implemented the first phase of the **Excel Template Action*
 * **Icon:** Reused `google/docs/docs.svg` as a placeholder
 
 ## 2. Template Parsing Results
-We parsed [template-example.xlsx](file:///usr/local/google/home/bryanweber/lkrdev/google-sheets-excel-template/template-example.xlsx) using `sheetjs`. Here are the handlebar expressions and where they map in our harvested [example-json_detail_lite_stream.json](file:///usr/local/google/home/bryanweber/lkrdev/google-sheets-excel-template/example-json_detail_lite_stream.json):
+We parsed [template-example.xlsx](file:///usr/local/google/home/bryanweber/lkrdev/google-sheets-excel-template/simulate/template-example.xlsx) using `exceljs`. Here are the handlebar expressions, layout parameters, and formatting details:
 
+### Handlebars / Template Placeholders
 | Cell | Raw Template Value | Target Mapping Source | Typo Correction |
 | :--- | :--- | :--- | :--- |
-| **B3** | `{{ _built_in.run_at }}` | Query execution timestamp / local time | *None* |
-| **B4** | `{{ _built_in.title }}` | `scheduledPlan.title` | *None* |
-| **B5** | `{{ _built_in.description }}` | `scheduledPlan.description` (if available) | *None* |
-| **B6** | `{{ _filters.users.state }}` | `appliedFilters["users.state"].value` | *None* |
-| **B7** | `{{ data[0].products.brand }}` | `data[0]["products.brand"].value` | *None (Fixed)* |
-| **C8** | `{{ fields.users.state.label }}` | `fields.dimensions` or `fields.measures` label | *None* |
-| **A9** | `{{ data._columns[0] }}` | Value of the 0th column in the current row | *None (Fixed)* |
-| **B9** | `{{ data._columns[2] }}` | Value of the 2nd column in the current row | *None (Fixed)* |
-| **C9** | `{{ data.users.state }}` | `row["users.state"].value` in current row | *None* |
-| **D9** | `{{ data.order_items.count }}` | `row["order_items.count"].value` in current row | *None* |
+| **B4** | `{{ _built_in.run_at }}` | Query execution timestamp / local time | *None* |
+| **B5** | `{{ _built_in.title }}` | `scheduledPlan.title` | *None* |
+| **B6** | `{{ _built_in.description }}` | `scheduledPlan.description` (if available) | *None* |
+| **B7** | `{{ _filters.users.state }}` | `appliedFilters["users.state"].value` | *None* |
+| **B8** | `{{ data[0].products.brand }}` | `data[0]["products.brand"].value` | *None (Fixed)* |
+| **C10** | `{{ fields.users.state.label }}` | `fields.dimensions` or `fields.measures` label | *None* |
+| **A11** | `{{ data._columns[0] }}` | Value of the 0th column in the current row | *None (Fixed)* |
+| **B11** | `{{ data._columns[2] }}` | Value of the 2nd column in the current row | *None (Fixed)* |
+| **C11** | `{{ data.users.state }}` | `row["users.state"].value` in current row | *None* |
+| **D11** | `{{ data.order_items.count }}` | `row["order_items.count"].value` in current row | *None* |
+
+*Note: Row 11 acts as the repeating data row.*
+
+### Layout, Fills, & Branding
+* **Embedded Image**: A PNG logo is anchored at cell **`A1`** (Top-Left corner) for sheet branding.
+* **Column Sizing**:
+  - Columns A, B, D, E, F: Width set to `12.63`
+  - Column C: Width set to `17.00` (wider to fit full state names without truncation)
+* **Cell Color Highlights**:
+  - 🟨 **Yellow Fill (`#FFFF00`)**: Metadata labels in `A4:A8`
+  - 🟦 **Blue Fill (`#3C78D8`)**: Table header row `A10:D10`
+  - ⬜ **Light Gray Fill (`#FFD9D9D9`)**: Repeating data row `A11:D11`
 
 ---
 

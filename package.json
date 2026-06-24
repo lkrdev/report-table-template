@@ -17,7 +17,8 @@
     "lint-fix": "./node_modules/.bin/tslint --fix -c tslint.json 'src/**/*.ts' 'bin/**/*.ts' 'test/**/*.ts' -p tsconfig.json",
     "lint-dependencies": "./node_modules/.bin/depcheck . --ignores '@types/*,depcheck,tslint-language-service' --ignore-dirs 'lib'",
     "prepack": "rm -rf lib; ./node_modules/.bin/tsc -d -p tsconfig.npm.json",
-    "generate-api-key": "ts-node -r dotenv/config -e \"import * as crypto from 'crypto'; import * as apiKey from './src/server/api_key'; console.log(apiKey.fromNonce(crypto.randomBytes(32).toString('hex')))\""
+    "generate-api-key": "ts-node -r dotenv/config -e \"import * as crypto from 'crypto'; import * as apiKey from './src/server/api_key'; console.log(apiKey.fromNonce(crypto.randomBytes(32).toString('hex')))\"",
+    "simulate": "./node_modules/.bin/ts-node -- ./simulate/simulate.ts"
   },
   "keywords": [
     "looker",
