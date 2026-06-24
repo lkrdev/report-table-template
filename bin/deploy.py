@@ -118,7 +118,7 @@ def main(
     looker_client_secret: Optional[str] = typer.Option(None, "--looker-client-secret", help="Looker Client Secret"),
 ):
     console.print(Panel.fit(
-        "[bold green]🚀 Google Docs Action Hub Deployment Wizard[/bold green]",
+        "[bold green]🚀 Google Sheets Excel Template Action Hub Deployment Wizard[/bold green]",
         border_style="green",
         padding=(0, 5)
     ))
@@ -201,8 +201,7 @@ def main(
     apis = [
         "run.googleapis.com",
         "secretmanager.googleapis.com",
-        "drive.googleapis.com",
-        "docs.googleapis.com"
+        "drive.googleapis.com"
     ]
 
 
@@ -264,7 +263,7 @@ def main(
         "gcloud",
         "run",
         "deploy",
-        "excel-template-action",
+        "google-sheets-excel-template",
         "--platform",
         "managed",
         f"--region={region}",
@@ -281,7 +280,7 @@ def main(
         deploy_cmd.append(f"--service-account={service_account_email}")
     
     deploy_cmd.extend([
-        "--image", "us-central1-docker.pkg.dev/lkr-dev-production/looker-action/excel-template-action:latest"
+        "--image", "us-central1-docker.pkg.dev/lkr-dev-production/looker-action/google-sheets-excel-template:latest"
     ])
     
     # Run the deployment and stream output to console
@@ -290,7 +289,7 @@ def main(
     # 8. Post-deployment configuration (Update URL)
     console.print("\n[bold cyan]Retrieving Deployed Service URL...[/bold cyan]")
     url_res = run_cmd([
-        "gcloud", "run", "services", "describe", "excel-template-action",
+        "gcloud", "run", "services", "describe", "google-sheets-excel-template",
         "--platform", "managed",
         f"--region={region}",
         "--format=value(status.url)"
@@ -300,7 +299,7 @@ def main(
     console.print(f"Deployed Service URL: [bold green]{service_url}[/bold green]")
     console.print(f"Updating ACTION_HUB_BASE_URL env var on Cloud Run to [bold green]{service_url}[/bold green]...")
     run_cmd([
-        "gcloud", "run", "services", "update", "excel-template-action",
+        "gcloud", "run", "services", "update", "google-sheets-excel-template",
         "--platform", "managed",
         f"--region={region}",
         f"--update-env-vars=ACTION_HUB_BASE_URL={service_url}"
@@ -345,7 +344,7 @@ def main(
     
     table.add_row("Action Hub URL", service_url)
     table.add_row("Authorization Token (API Key)", api_key_token)
-    table.add_row("OAuth Redirect URI", f"{service_url}/actions/google_docs/oauth_redirect")
+    table.add_row("OAuth Redirect URI", f"{service_url}/actions/google-sheet-xlsx-template/oauth_redirect")
     
     console.print("\n")
     console.print(Panel.fit(

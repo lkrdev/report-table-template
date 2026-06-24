@@ -1,43 +1,54 @@
-# Google Docs Looker Action Hub
+# Google Sheets Excel Template Looker Action Hub
 
-![output all results](assets/all-results.png)
+A lightweight, fully minimized standalone Looker Action Hub hosting **only** the Google Sheets Excel Template action (`google-sheet-xlsx-template`).
 
-A lightweight, fully minimized standalone Looker Action Hub hosting **only** the Google Docs Looker action (`google_docs`). The purpose of this is to get unlimited results into Google Docs which supports:
+This action allows Looker users to generate beautifully formatted Excel (`.xlsx`) files by merging dynamic Looker query data with a pre-formatted Excel template stored in Google Drive. This is ideal for generating highly branded, customized reports with complex layouts, formulas, and formatting that standard CSV or Excel exports cannot achieve.
 
-- Headers & Footers
-- Page numbers and dynamic text
-- Section breaks
-- Table headers across all pages
-- PDF and physical printing
-
-Here is a link to an example [output document with unlimited results](https://docs.google.com/document/d/17Sk_EJdvKc1P8UI68z973-1zkn8Zm_W6sOfbGds4TCg/edit?usp=sharing) and a downloadable [PDF](https://docs.google.com/document/d/17Sk_EJdvKc1P8UI68z973-1zkn8Zm_W6sOfbGds4TCg/export?format=pdf).
-
-
+---
 
 ## What It Does
 
 When Looker sends a query payload via webhook, this service:
-1. Validates OAuth2 user credentials (`drive` and `documents` scopes) against Google APIs, enforcing optional domain allowlists (`domain_allowlist`).
-2. Creates a new blank Google Document (`application/vnd.google-apps.document`) within a target Drive folder or Shared Drive.
-3. Formats page boundaries to Landscape (`11" x 8.5"`) with `0.5"` margins.
-4. Streams Looker CSV payloads into a dynamic Google Doc table via batched `insertText` operations (default 100 insertions/batch) to optimize API payload constraints.
-5. Additional formatting:
-   - Applies pinned header rows (`pinTableHeaderRows: 1`) to repeat table headers across page breaks.
-   - Styles header rows with a `rgb(0.95, 0.95, 0.95)` light-gray background and bold text.
-   - Configures fixed column properties (first column at `0.5"`, remaining columns distributed evenly) and `8pt` typography.
-6. Implements exponential backoff retries (up to 5 attempts) on Google API rate limits (`429`) or server failures (`5xx`).
+1. **Validates OAuth2 User Credentials**: Authenticates the user against Google Drive APIs (requiring `drive` and `userinfo.email` scopes), enforcing optional domain allowlists (`domain_allowlist`).
+2. **Downloads the Excel Template**: Retrieves a selected `.xlsx` template file from a specified folder in Google Drive.
+3. **Populates the Template**:
+   - Uses [ExcelJS](https://github.com/exceljs/exceljs) to parse the template.
+   - Detects the **repeating data row** automatically by scanning for cells containing `{{ data.field_name }}` or `{{ data._columns[i] }}`.
+   - Automatically duplicates and shifts rows to insert the entire Looker query result table while preserving cell styles, heights, and formulas.
+   - Resolves all other single-value placeholders in the sheet (e.g., in headers, titles, or footers) using query metadata, execution details, or filters.
+   - If any placeholders cannot be resolved, it appends a list of errors to a special `_errors` sheet in the workbook.
+4. **Uploads the Populated Excel File**: Saves the final populated spreadsheet back to your Google Drive (or Shared Drive) in the chosen destination folder.
+
+---
+
+## Handlebars / Template Placeholders Reference
+
+You can design your Excel templates with the following placeholder patterns inside any cells:
+
+| Expression Pattern | Description | Example |
+| :--- | :--- | :--- |
+| `{{ _built_in.run_at }}` | The timestamp when the query was executed. | `2026-06-24T18:20:22Z` |
+| `{{ _built_in.title }}` | The title of the scheduled plan. | `Weekly Sales Report` |
+| `{{ _built_in.description }}` | The description of the scheduled plan. | *Optional description text* |
+| `{{ _filters.view_name.field_name }}` | The value of a specific filter applied to the query. | `{{ _filters.users.state }}` $\rightarrow$ `California` |
+| `{{ fields.view_name.field_name.label }}` | The human-readable label of a specific field. | `{{ fields.users.state.label }}` $\rightarrow$ `State` |
+| `{{ data[index].view_name.field_name }}` | An explicit, absolute row lookup from the results (0-indexed). | `{{ data[0].products.brand }}` |
+| `{{ data.view_name.field_name }}` | The value of the field for the current row (used in the repeating row). | `{{ data.users.state }}` |
+| `{{ data._columns[index] }}` | The value of the N-th column in the current row (used in the repeating row). | `{{ data._columns[0] }}` |
+
+> [!NOTE]
+> **Repeating Rows**: The action automatically identifies the row containing repeating cell patterns (e.g., `{{ data.users.state }}`) and replicates it for every row in the dataset. Any rows below it are shifted down, and formulas referencing those rows are automatically adjusted by Excel.
 
 ---
 
 ## Prerequisites
 
-For **local development and testing**, you will need to install:
+For **local development and testing**:
 - [Node.js (>= 20.16.0)](https://nodejs.org/) and [Yarn (>= 1.19.1)](https://yarnpkg.com/).
 - [Astral uv](https://docs.astral.sh/uv/getting-started/installation/) for managing Python environments and scripts.
 
-For **deploying to Google Cloud**, you can:
-- Install the [Google Cloud SDK (gcloud CLI)](https://cloud.google.com/sdk/docs/install) locally.
-- **Alternative (No Installation Required)**: Use [Google Cloud Shell](https://cloud.google.com/shell). Cloud Shell is a web-based terminal that comes pre-configured with the Google Cloud SDK, Node.js, Yarn, Git, and Docker. You can also deploy instantly using the **Deploy to Cloud Run** button below.
+For **deploying to Google Cloud**:
+- Install the [Google Cloud SDK (gcloud CLI)](https://cloud.google.com/sdk/docs/install) locally, or use [Google Cloud Shell](https://cloud.google.com/shell).
 
 ---
 
@@ -46,31 +57,33 @@ For **deploying to Google Cloud**, you can:
 Register the deployed Action Hub within Looker:
 1. Navigate to **Admin** > **Platform** > **Actions**.
 2. Click **Add Action Hub**.
-3. Enter your deployed Cloud Run URL (e.g., `https://excel-template-action-xxx-uc.a.run.app`).
+3. Enter your deployed Cloud Run URL (e.g., `https://google-sheets-excel-template-xxx-uc.a.run.app`).
 4. Supply your **Authorization Token** (`ACTION_HUB_SECRET` or authorization headers).
-5. Click **Add Hub** and enable the **Excel Template** action.
+5. Click **Add Hub** and enable the **Google Sheets Excel Template** action.
 
 ---
 
 ## Google OAuth Client Setup
 
-To allow Looker users to authenticate with Google Drive and Google Docs, you must create Google OAuth 2.0 credentials:
+To allow Looker users to authenticate with Google Drive, you must create Google OAuth 2.0 credentials:
 
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
 2. Select your Google Cloud project or create a new one.
 3. Configure the OAuth Consent Screen:
    - Navigate to **APIs & Services** > **OAuth consent screen**.
    - Choose **Internal** (if you want to limit access to users in your Google Workspace organization) or **External**, then click **Create**.
-   - Fill in the required application details (App name, user support email, developer contact information) and click **Save and Continue**.
-   - (Optional) In the **Scopes** page, you can add `https://www.googleapis.com/auth/drive` and `https://www.googleapis.com/auth/documents` scopes, then click **Save and Continue**.
+   - Fill in the required application details and click **Save and Continue**.
+   - In the **Scopes** page, add:
+     - `https://www.googleapis.com/auth/drive` (to access and save files)
+     - `https://www.googleapis.com/auth/userinfo.email` (to fetch the user's email address)
+   - Click **Save and Continue**.
 4. Generate OAuth Credentials:
    - Navigate to **APIs & Services** > **Credentials**.
    - Click **+ Create Credentials** at the top of the page, and select **OAuth client ID**.
    - Set **Application type** to **Web application**.
    - In the **Authorized redirect URIs** section, click **+ Add URI**:
-     - **For local development / initial setup**: Add `http://localhost:8080/actions/google_docs/oauth_redirect`
-     - **For Cloud Run deployment**: You should put a placeholder for now. `https://example.com`. Once you deploy, you **must** return here to add the final redirect URI: `https://<your-cloud-run-domain>/actions/google_docs/oauth_redirect`. 
-   - Leave **Authorized JavaScript origins** empty/blank.
+     - **For local development**: `http://localhost:8080/actions/google-sheet-xlsx-template/oauth_redirect`
+     - **For Cloud Run deployment**: `https://<your-cloud-run-domain>/actions/google-sheet-xlsx-template/oauth_redirect`
    - Click **Create**.
 5. Save the generated **Client ID** and **Client Secret**. These will be used for the `GOOGLE_DRIVE_CLIENT_ID` and `GOOGLE_DRIVE_CLIENT_SECRET` environment variables.
 
@@ -97,7 +110,7 @@ After the Cloud Shell environment finishes loading, execute the deployment scrip
 *(Note: The script will automatically install `uv` if it is not already present on your system, and then launch the Python wizard. Any arguments you pass to `./deploy.sh` are automatically forwarded directly to the underlying `bin/deploy.py` script.)*
 
 This script will automatically:
-* Enable the required Google Cloud APIs (Cloud Run, Secret Manager, Google Drive, and Google Docs).
+* Enable the required Google Cloud APIs (Cloud Run, Secret Manager, and Google Drive).
 * Prompt you for (or accept via arguments) your Google Drive Client ID and Client Secret.
 * Generate and store secure encryption keys in Secret Manager (`cipher-master` and `action-hub-secret`).
 * Deploy the integration to Google Cloud Run.
@@ -121,26 +134,13 @@ The deployment script (`./deploy.sh` / `bin/deploy.py`) supports the following c
 | `--looker-client-secret` | | `TEXT` | Looker Client Secret |
 | `--help` | | `FLAG` | Show help message and exit |
 
-For example, to run a fully unattended deployment with automated Looker registration and a custom pre-existing service account:
-```bash
-./deploy.sh \
-  --project-id="my-gcp-project" \
-  --drive-client-id="my-drive-client-id" \
-  --drive-client-secret="my-drive-client-secret" \
-  --region="us-central1" \
-  --service-account-email="my-preexisting-sa@my-gcp-project.iam.gserviceaccount.com" \
-  --register-looker \
-  --looker-url="https://mycompany.looker.com" \
-  --looker-client-id="my-looker-api-id" \
-  --looker-client-secret="my-looker-api-secret"
-```
-
+---
 
 ### Option B: Deploying via CLI (gcloud)
 
-1. Enable the Google Drive and Google Docs APIs in your Google Cloud Project:
+1. Enable the Google Drive API in your Google Cloud Project:
 ```bash
-gcloud services enable drive.googleapis.com docs.googleapis.com
+gcloud services enable drive.googleapis.com
 ```
 
 2. Deploy the standalone action integration to Google Cloud Run:
@@ -156,20 +156,21 @@ gcloud secrets create cipher-master \
 gcloud secrets create action-hub-secret \
   --data-file <(echo $ACTION_HUB_SECRET)
 
-gcloud run deploy excel-template-action \
-  --image=us-central1-docker.pkg.dev/lkr-dev-production/looker-action/excel-template-action:latest \
+gcloud run deploy google-sheets-excel-template \
+  --image=us-central1-docker.pkg.dev/lkr-dev-production/looker-action/google-sheets-excel-template:latest \
   --platform=managed \
   --region=us-central1 \
   --no-invoker-iam-check \
-  --set-env-vars="GOOGLE_DRIVE_CLIENT_ID=your_id,GOOGLE_DRIVE_CLIENT_SECRET=your_secret,ACTION_HUB_SECRET=your_action_hub_secret,ACTION_HUB_BASE_URL=https://your-cloud-run-url,ACTION_HUB_LABEL=Excel Template,CIPHER_MASTER=your_cipher_master"
+  --set-env-vars="GOOGLE_DRIVE_CLIENT_ID=your_id,GOOGLE_DRIVE_CLIENT_SECRET=your_secret,ACTION_HUB_SECRET=your_action_hub_secret,ACTION_HUB_BASE_URL=https://your-cloud-run-url,ACTION_HUB_LABEL=Google Sheets Excel Template,CIPHER_MASTER=your_cipher_master"
 ```
+
+---
 
 ### Option C: Deploying via Google Cloud Web Console (UI)
 
 1. **Enable APIs**:
    - Go to **APIs & Services** > **Library** in the GCP Console.
    - Search for **Google Drive API** and click **Enable**.
-   - Search for **Google Docs API** and click **Enable**.
 
 2. **Create Secrets**:
    - Navigate to **Security** > **Secret Manager** and click **Create Secret**.
@@ -179,19 +180,21 @@ gcloud run deploy excel-template-action \
 3. **Deploy Cloud Run Service**:
    - Navigate to **Cloud Run** and click **Create Service**.
    - Select **Deploy one revision from an existing container image**.
-   - Paste the container image URL: `us-central1-docker.pkg.dev/lkr-dev-production/looker-action/excel-template-action:latest`
-   - Name your service (e.g., `excel-template-action`) and select your **Region**.
+   - Paste the container image URL: `us-central1-docker.pkg.dev/lkr-dev-production/looker-action/google-sheets-excel-template:latest`
+   - Name your service (e.g., `google-sheets-excel-template`) and select your **Region**.
    - Under **Authentication**, select **Allow unauthenticated invocations**.
    - Expand the **Container, Volumes, Connections, Security** section:
      - Under **Variables & Secrets**, add the following environment variables:
        - `GOOGLE_DRIVE_CLIENT_ID`: Your Google OAuth Client ID.
        - `GOOGLE_DRIVE_CLIENT_SECRET`: Your Google OAuth Client Secret.
-       - `ACTION_HUB_LABEL`: `Excel Template`
-       - `ACTION_HUB_BASE_URL`: The URL of your deployed Cloud Run service (e.g. `https://excel-template-action-xxxx.a.run.app`). Note: You can update this environment variable with the generated URL after deployment.
+       - `ACTION_HUB_LABEL`: `Google Sheets Excel Template`
+       - `ACTION_HUB_BASE_URL`: The URL of your deployed Cloud Run service. (Note: You can update this environment variable with the generated URL after deployment).
      - Reference your secrets as environment variables:
        - Reference secret `cipher-master` (version `latest`) and expose it as environment variable `CIPHER_MASTER`.
        - Reference secret `action-hub-secret` (version `latest`) and expose it as environment variable `ACTION_HUB_SECRET`.
-   - Click **Create** to deploy.
+    - Click **Create** to deploy.
+
+---
 
 ### Option D: Deploying via Terraform
 
@@ -212,6 +215,8 @@ If you prefer Infrastructure-as-Code (IaC), you can provision all necessary Goog
 4. Initialize and apply the Terraform configuration:
    ```bash
    terraform init
+   ```
+   ```bash
    terraform apply
    ```
    *(This will initially deploy a lightweight placeholder container because your custom integration container has not yet been built and pushed to the repository.)*
@@ -220,17 +225,15 @@ If you prefer Infrastructure-as-Code (IaC), you can provision all necessary Goog
    ```bash
    gcloud builds submit --tag $(terraform output -raw suggested_docker_image_tag) ..
    ```
-   *(Note the `..` at the end to point Cloud Build to the parent directory containing the `Dockerfile` and source code.)*
 
 6. Update the Cloud Run service with the newly built image and the final service URL:
    ```bash
    terraform apply -var="image=$(terraform output -raw suggested_docker_image_tag)" -var="action_hub_base_url=$(terraform output -raw service_url)"
    ```
-   *(Alternatively, uncomment and update these variables inside your `terraform.tfvars` file and run `terraform apply`.)*
 
 7. Add the OAuth redirect URI to your Google Cloud Console OAuth Client ID:
    ```
-   <your_service_url>/actions/google_docs/oauth_redirect
+   <your_service_url>/actions/google-sheet-xlsx-template/oauth_redirect
    ```
 
 ---

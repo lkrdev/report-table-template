@@ -58,15 +58,15 @@ except Exception as e:
     )
     print(f'Updated existing Integration Hub (ID: {new_hub.id})')
 
-print('Enabling google_docs integration...')
+print('Enabling google-sheet-xlsx-template integration...')
 integration = None
 for attempt in range(6):
     integrations = sdk.all_integrations()
-    integration = next((i for i in integrations if i.integration_hub_id == new_hub.id and i.id.split("::")[-1] == "google_docs"), None)
+    integration = next((i for i in integrations if i.integration_hub_id == new_hub.id and i.id.split("::")[-1] == "google-sheet-xlsx-template"), None)
     if integration:
         break
     if attempt < 5:
-        print(f"Integration 'google_docs' not found on hub {new_hub.id} yet. Retrying in 3 seconds... (Attempt {attempt+1}/6)")
+        print(f"Integration 'google-sheet-xlsx-template' not found on hub {new_hub.id} yet. Retrying in 3 seconds... (Attempt {attempt+1}/6)")
         time.sleep(3)
 
 if integration:
@@ -74,6 +74,6 @@ if integration:
         integration_id=integration.id,
         body={'enabled': True}
     )
-    print('Successfully enabled google_docs integration!')
+    print('Successfully enabled google-sheet-xlsx-template integration!')
 else:
-    raise Exception('Could not find google_docs integration on the registered hub.')
+    raise Exception('Could not find google-sheet-xlsx-template integration on the registered hub.')

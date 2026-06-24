@@ -4,7 +4,7 @@ google_drive_client_id     = "your-google-drive-client-id"
 google_drive_client_secret = "your-google-drive-client-secret"
 
 # Optional: Set this after the first apply once you get the service_url output
-# action_hub_base_url      = "https://excel-template-action-xxxx.a.run.app"
+# action_hub_base_url      = "https://google-sheets-excel-template-xxxx.a.run.app"
 
 # Optional: Set this once your real container image is built and pushed to Artifact Registry
-# image                    = "us-central1-docker.pkg.dev/your-gcp-project-id/excel-template-action/excel-template-action:latest"
+# image                    = "us-central1-docker.pkg.dev/your-gcp-project-id/google-sheets-excel-template/google-sheets-excel-template:latest"

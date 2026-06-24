@@ -23,7 +23,6 @@ resource "google_project_service" "services" {
     "run.googleapis.com",
     "secretmanager.googleapis.com",
     "drive.googleapis.com",
-    "docs.googleapis.com",
     "cloudbuild.googleapis.com",
     "artifactregistry.googleapis.com",
     "iam.googleapis.com"
@@ -34,9 +33,9 @@ resource "google_project_service" "services" {
 
 # 2. Create a dedicated Service Account for Cloud Run
 resource "google_service_account" "sa" {
-  account_id   = "excel-template-action-sa"
-  display_name = "Excel Template Action Service Account"
-  description  = "Dedicated service account for Excel Template Action"
+  account_id   = "google-sheets-excel-temp-sa"
+  display_name = "Google Sheets Excel Template Service Account"
+  description  = "Dedicated service account for Google Sheets Excel Template"
   depends_on   = [google_project_service.services]
 }
 
@@ -112,15 +111,15 @@ resource "google_secret_manager_secret_iam_member" "drive_client_secret_accessor
 # 7. Create Artifact Registry Repository for the Docker image
 resource "google_artifact_registry_repository" "repo" {
   location      = var.region
-  repository_id = "excel-template-action"
-  description   = "Docker repository for Excel Template Action"
+  repository_id = "google-sheets-excel-template"
+  description   = "Docker repository for Google Sheets Excel Template"
   format        = "DOCKER"
   depends_on    = [google_project_service.services]
 }
 
 # 8. Deploy Cloud Run Service
 resource "google_cloud_run_v2_service" "service" {
-  name                 = "excel-template-action"
+  name                 = "google-sheets-excel-template"
   location             = var.region
   ingress              = "INGRESS_TRAFFIC_ALL"
   invoker_iam_disabled = true
@@ -145,7 +144,7 @@ resource "google_cloud_run_v2_service" "service" {
 
       env {
         name  = "ACTION_HUB_LABEL"
-        value = "lkr.dev actions (google doc)"
+        value = "lkr.dev actions (excel template)"
       }
 
       env {
