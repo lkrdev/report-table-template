@@ -625,7 +625,7 @@ export class GoogleSheetXlsxTemplateAction extends Hub.OAuthActionV2 {
   }
 
   sanitizeGaxiosError(err: any) {
-    [err.config, err.response?.config].forEach((config) => {
+    [err?.config, err?.response?.config].forEach((config) => {
       if (config) {
         ["data", "body"].forEach((prop) => {
           if (config[prop]) {
@@ -825,6 +825,10 @@ export class GoogleSheetXlsxTemplateAction extends Hub.OAuthActionV2 {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(encryptedPayload),
+      }).then((res) => {
+        if (!res.ok) {
+          throw new Error("HTTP error! status: " + res.status)
+        }
       }).catch((_err) => {
         winston.error(String(_err))
       })
@@ -859,7 +863,7 @@ export class GoogleSheetXlsxTemplateAction extends Hub.OAuthActionV2 {
     options: any,
   ): Promise<drive_v3.Schema$File[]> {
     let files: drive_v3.Schema$File[] = []
-    let pageToken: string | undefined
+    let pageToken: string | undefined = typeof options.pageToken === "string" ? options.pageToken : undefined
     do {
       const res = await drive.files.list({ ...options, pageToken })
       if (res.data.files) {
