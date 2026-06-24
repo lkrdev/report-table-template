@@ -31,8 +31,19 @@ if ! command -v cloudflared &> /dev/null; then
     fi
 fi
 
-# Determine the port to tunnel (default to 8080 if not provided)
-PORT=${1:-8080}
+# Determine the port to tunnel. Precedence:
+# 1. Command line argument (e.g. ./tunnel.sh 3000)
+# 2. PORT environment variable
+# 3. PORT from .env file
+# 4. Default to 8080
+if [ -z "$1" ] && [ -z "$PORT" ] && [ -f ".env" ]; then
+    # Parse PORT from .env file safely without sourcing it
+    DOTENV_PORT=$(grep -E '^\s*PORT\s*=' .env | cut -d= -f2- | tr -d '[:space:]' | tr -d '"' | tr -d "'")
+    if [ -n "$DOTENV_PORT" ]; then
+        PORT=$DOTENV_PORT
+    fi
+fi
+PORT=${1:-${PORT:-8080}}
 echo "Starting Cloudflare tunnel to http://localhost:$PORT..."
 
 # Create a temporary file to capture logs so we can extract the URL
