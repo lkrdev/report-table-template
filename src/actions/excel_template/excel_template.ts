@@ -896,7 +896,7 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
       const resolved = this.evaluateExpression(expr, context, rowData, errors)
 
       let numVal = Number(resolved)
-      if (isNaN(numVal) && typeof resolved === "string") {
+      if (isNaN(numVal)) {
         if (/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(resolved)) {
           const cleanNumStr = resolved.replace(/,/g, "")
           numVal = Number(cleanNumStr)

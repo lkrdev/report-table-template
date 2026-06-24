@@ -117,7 +117,7 @@ describe(`${action.constructor.name} unit tests`, () => {
     const errorsSheetName = workbook.SheetNames.find((name) => name === "_errors")
     chai.expect(errorsSheetName).to.exist
     const errorsSheet = workbook.Sheets[errorsSheetName!]
-    const errorsData = XLSX.utils.sheet_to_json(errorsSheet, { header: 1 }) as any[][]
+    const errorsData: any[][] = XLSX.utils.sheet_to_json(errorsSheet, { header: 1 })
 
     const errorMessages = errorsData.map((row) => row[0])
     chai.expect(errorMessages).to.have.lengthOf(6)
