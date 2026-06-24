@@ -152,7 +152,10 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
         this.populateTemplate(workbook, context, errors)
 
         if (errors.size > 0) {
-          winston.info(`${LOG_PREFIX} Creating _errors sheet with ${errors.size} errors`, { webhookId: request.webhookId })
+          winston.info(
+            `${LOG_PREFIX} Creating _errors sheet with ${errors.size} errors`,
+            { webhookId: request.webhookId },
+          )
           const errorRows = Array.from(errors).map((err) => [`Could not find ${err}`])
           const errorsSheet = XLSX.utils.aoa_to_sheet(errorRows)
           XLSX.utils.book_append_sheet(workbook, errorsSheet, "_errors")
@@ -891,9 +894,18 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
     if (match) {
       const expr = match[1]
       const resolved = this.evaluateExpression(expr, context, rowData, errors)
-      if (resolved !== "" && !isNaN(Number(resolved))) {
+
+      let numVal = Number(resolved)
+      if (isNaN(numVal) && typeof resolved === "string") {
+        if (/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(resolved)) {
+          const cleanNumStr = resolved.replace(/,/g, "")
+          numVal = Number(cleanNumStr)
+        }
+      }
+
+      if (resolved !== "" && !isNaN(numVal)) {
         cell.t = "n"
-        cell.v = Number(resolved)
+        cell.v = numVal
       } else {
         cell.t = "s"
         cell.v = resolved
@@ -910,7 +922,28 @@ export class ExcelTemplateAction extends Hub.OAuthActionV2 {
     })
   }
 
+  private stripHtml(val: string): string {
+    if (!val) {
+      return ""
+    }
+    if (val.includes("<") && val.includes(">")) {
+      return val
+        .replace(/<[^>]*>/g, "")
+        .replace(/&amp;/g, "&")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+    }
+    return val
+  }
+
   private evaluateExpression(expr: string, context: any, rowData?: any, errors?: Set<string>): string {
+    const rawVal = this.evaluateExpressionRaw(expr, context, rowData, errors)
+    return this.stripHtml(rawVal)
+  }
+
+  private evaluateExpressionRaw(expr: string, context: any, rowData?: any, errors?: Set<string>): string {
     expr = expr.trim()
 
     // 1. _built_in

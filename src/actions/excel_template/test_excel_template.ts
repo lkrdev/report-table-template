@@ -117,8 +117,8 @@ describe(`${action.constructor.name} unit tests`, () => {
     const errorsSheetName = workbook.SheetNames.find((name) => name === "_errors")
     chai.expect(errorsSheetName).to.exist
     const errorsSheet = workbook.Sheets[errorsSheetName!]
-    const errorsData = XLSX.utils.sheet_to_json(errorsSheet, { header: 1 }) as string[][]
-    
+    const errorsData = XLSX.utils.sheet_to_json(errorsSheet, { header: 1 }) as any[][]
+
     const errorMessages = errorsData.map((row) => row[0])
     chai.expect(errorMessages).to.have.lengthOf(6)
     chai.expect(errorMessages).to.include("Could not find {{ data._columns[2] }}")
@@ -127,5 +127,67 @@ describe(`${action.constructor.name} unit tests`, () => {
     chai.expect(errorMessages).to.include("Could not find {{ _filters.users.state }}")
     chai.expect(errorMessages).to.include("Could not find {{ data[0].products.brand }}")
     chai.expect(errorMessages).to.include("Could not find {{ fields.users.state.label }}")
+  })
+
+  it("successfully strips HTML and converts formatted numbers with commas to Excel numbers", async () => {
+    const request = new Hub.ActionRequest()
+    request.type = Hub.ActionType.Query
+    request.webhookId = "test_webhook_html_strip"
+    request.lookerVersion = "23.0.0"
+    request.params = {
+      state_json: JSON.stringify({
+        tokens: { access_token: "mock_token" },
+        redirect: "http://redirect",
+      }),
+    }
+    request.formParams = {
+      filename: "HTML Report",
+      folder: "mock_folder_id",
+    }
+    request.scheduledPlan = {
+      title: "HTML Test",
+      scheduledPlanId: 789,
+      downloadUrl: "http://example.com/download",
+    }
+
+    const mockPayload = {
+      fields: {
+        dimensions: [
+          { name: "order_items.created_week", label: "Created Week" },
+          { name: "users.state", label: "State" },
+        ],
+        measures: [
+          { name: "order_items.count", label: "Count" },
+        ],
+      },
+      data: [
+        {
+          "order_items.created_week": { value: "<a href='#'>2026-06-24</a>" },
+          "users.state": { value: "<a href='#'>California</a>" },
+          "order_items.count": { value: "<a href='#'>4,214</a>" },
+        },
+      ],
+    }
+
+    request.stream = async (callback: (readable: Readable) => Promise<any>) => {
+      const readStream = Readable.from([JSON.stringify(mockPayload)])
+      return callback(readStream)
+    }
+
+    const response = await action.validateAndExecute(request)
+
+    chai.expect(response.success).to.be.true
+
+    chai.expect(uploadedBuffer).to.not.be.null
+    const workbook = XLSX.read(uploadedBuffer!, { type: "buffer" })
+    const sheetName = workbook.SheetNames[0]
+    const sheet = workbook.Sheets[sheetName]
+    chai.expect(sheet).to.exist
+
+    // Assert repeating rows (should have 1 row of data starting at row 9)
+    chai.expect(sheet.A9?.v).to.equal("2026-06-24") // html stripped
+    chai.expect(sheet.C9?.v).to.equal("California") // html stripped
+    chai.expect(sheet.D9?.v).to.equal(4214) // html stripped and parsed as number
+    chai.expect(sheet.D9?.t).to.equal("n") // verify type is number
   })
 })
