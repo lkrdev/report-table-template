@@ -144,9 +144,10 @@ export class GoogleSheetXlsxTemplateAction extends Hub.OAuthActionV2 {
         if (!request.formParams.template_file_id) {
           throw new Error("No template file selected.")
         }
-        winston.info(`${LOG_PREFIX} Downloading template from Google Drive (ID: ${request.formParams.template_file_id})`, {
-          webhookId: request.webhookId,
-        })
+        winston.info(
+          `${LOG_PREFIX} Downloading template from Google Drive (ID: ${request.formParams.template_file_id})`,
+          { webhookId: request.webhookId },
+        )
         const templateResponse = await drive.files.get(
           {
             fileId: request.formParams.template_file_id,
@@ -398,7 +399,7 @@ export class GoogleSheetXlsxTemplateAction extends Hub.OAuthActionV2 {
               }
             }
           } else if (request.formParams.fetchpls) {
-            if (folders && folders.length > 0) {
+            if (folders.length > 0) {
               templateFolderId = folders[0].name
             } else {
               templateFolderId = "root"
