@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "Node",
+      "noEmitOnError": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "allowJs": true,
+      "outDir": "lib",
+      "sourceMap": false,
+      "strict": true,
+      "target": "ES2018",
+      "plugins": [
+        {
+          "name": "tslint-language-service",
+          "alwaysShowRuleFailuresAsWarnings": true
+        }
+      ]
+    },
+    "exclude": [
+      "node_modules",
+      "lib",
+      "tmp"
+    ]
+}

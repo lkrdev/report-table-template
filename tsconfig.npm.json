@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/api_types/**/*.ts",
+    "src/hub/**/*.ts",
+    "src/server/**/*.ts",
+    "src/xpc/**/**.ts",
+    "src/crypto/**/**.ts",
+    "src/actions/**/!(test)**.ts",
+    "src/actions/index.ts"
+  ]
+}

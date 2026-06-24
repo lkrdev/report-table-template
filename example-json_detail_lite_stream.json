@@ -1,0 +1,1019 @@
+{
+  "added_params": null,
+  "aggregate_table_used_info": null,
+  "applied_column_limit": null,
+  "applied_filter_expression": null,
+  "applied_filters": {
+    "products.brand": {
+      "value": "-EMPTY",
+      "field": {
+        "align": "left",
+        "can_filter": true,
+        "can_time_filter": false,
+        "category": "dimension",
+        "default_filter_value": null,
+        "description": "",
+        "dimension_group": null,
+        "dynamic": false,
+        "enumerations": null,
+        "error": null,
+        "field_group_label": null,
+        "field_group_variant": "Brand",
+        "fill_style": null,
+        "filters": null,
+        "fiscal_month_offset": 0,
+        "has_allowed_values": false,
+        "hidden": false,
+        "is_filter": false,
+        "is_fiscal": false,
+        "is_numeric": false,
+        "is_timeframe": null,
+        "label": "Products Brand",
+        "label_from_parameter": null,
+        "label_short": "Brand",
+        "lookml_link": "/projects/thelook_ecomm/files/views%2F04_products.view.lkml?line=27",
+        "map_layer": null,
+        "measure": false,
+        "name": "products.brand",
+        "parameter": false,
+        "permanent": null,
+        "primary_key": false,
+        "project_name": "thelook_ecomm",
+        "requires_refresh_on_sort": false,
+        "scope": "products",
+        "sortable": true,
+        "source_file": "views/04_products.view.lkml",
+        "source_file_path": "thelook_ecomm/views/04_products.view.lkml",
+        "sql": "TRIM(${TABLE}.brand) ",
+        "sql_case": null,
+        "strict_value_format": false,
+        "suggest_dimension": "products.brand",
+        "suggest_explore": "order_items",
+        "suggestable": true,
+        "suggestions": null,
+        "tags": [],
+        "time_interval": null,
+        "type": "string",
+        "user_attribute_filter_types": ["string", "advanced_filter_string"],
+        "value_format": null,
+        "view": "products",
+        "view_label": "Products",
+        "week_start_day": "monday",
+        "times_used": 0,
+        "original_view": "products",
+        "sorted": null,
+        "synonyms": []
+      }
+    },
+    "order_items.created_week": {
+      "value": "NOT NULL",
+      "field": {
+        "align": "left",
+        "can_filter": true,
+        "can_time_filter": false,
+        "category": "dimension",
+        "default_filter_value": null,
+        "description": "Date and time the item was added to the order",
+        "dimension_group": "order_items.created",
+        "dynamic": false,
+        "enumerations": null,
+        "error": null,
+        "field_group_label": "Created Date",
+        "field_group_variant": "Week",
+        "fill_style": "range",
+        "filters": null,
+        "fiscal_month_offset": 0,
+        "has_allowed_values": false,
+        "hidden": false,
+        "is_filter": false,
+        "is_fiscal": false,
+        "is_numeric": false,
+        "is_timeframe": null,
+        "label": "Order Items Created Week",
+        "label_from_parameter": null,
+        "label_short": "Created Week",
+        "lookml_link": "/projects/thelook_ecomm/files/views%2F01_order_items.view.lkml?line=192",
+        "map_layer": null,
+        "measure": false,
+        "name": "order_items.created_week",
+        "parameter": false,
+        "permanent": null,
+        "primary_key": false,
+        "project_name": "thelook_ecomm",
+        "requires_refresh_on_sort": false,
+        "scope": "order_items",
+        "sortable": true,
+        "source_file": "views/01_order_items.view.lkml",
+        "source_file_path": "thelook_ecomm/views/01_order_items.view.lkml",
+        "sql": "${TABLE}.created_at ",
+        "sql_case": null,
+        "strict_value_format": false,
+        "suggest_dimension": "order_items.created_week",
+        "suggest_explore": "order_items",
+        "suggestable": false,
+        "suggestions": null,
+        "tags": [],
+        "time_interval": { "name": "week", "count": 1 },
+        "type": "date_week",
+        "user_attribute_filter_types": ["datetime", "advanced_filter_datetime"],
+        "value_format": null,
+        "view": "order_items",
+        "view_label": "Order Items",
+        "week_start_day": "monday",
+        "times_used": 0,
+        "original_view": "order_items",
+        "sorted": null,
+        "synonyms": []
+      }
+    }
+  },
+  "applied_limit": null,
+  "cache_key": null,
+  "cached_derived_tables": null,
+  "can_see_sql": null,
+  "column_truncated": null,
+  "description": null,
+  "errors": null,
+  "expired": null,
+  "explore": {
+    "description": null,
+    "label": "(1) Orders, Items and Users",
+    "name": "order_items"
+  },
+  "fields": {
+    "dimensions": [
+      {
+        "align": "left",
+        "can_filter": true,
+        "can_time_filter": false,
+        "category": "dimension",
+        "default_filter_value": null,
+        "description": "Date and time the item was added to the order",
+        "dimension_group": "order_items.created",
+        "dynamic": false,
+        "enumerations": null,
+        "error": null,
+        "field_group_label": "Created Date",
+        "field_group_variant": "Week",
+        "fill_style": "range",
+        "filters": null,
+        "fiscal_month_offset": 0,
+        "has_allowed_values": false,
+        "hidden": false,
+        "is_filter": false,
+        "is_fiscal": false,
+        "is_numeric": false,
+        "is_timeframe": null,
+        "label": "Order Items Created Week",
+        "label_from_parameter": null,
+        "label_short": "Created Week",
+        "lookml_link": "/projects/thelook_ecomm/files/views%2F01_order_items.view.lkml?line=192",
+        "map_layer": null,
+        "measure": false,
+        "name": "order_items.created_week",
+        "parameter": false,
+        "permanent": null,
+        "primary_key": false,
+        "project_name": "thelook_ecomm",
+        "requires_refresh_on_sort": false,
+        "scope": "order_items",
+        "sortable": true,
+        "source_file": "views/01_order_items.view.lkml",
+        "source_file_path": "thelook_ecomm/views/01_order_items.view.lkml",
+        "sql": "${TABLE}.created_at ",
+        "sql_case": null,
+        "strict_value_format": false,
+        "suggest_dimension": "order_items.created_week",
+        "suggest_explore": "order_items",
+        "suggestable": false,
+        "suggestions": null,
+        "tags": [],
+        "time_interval": { "name": "week", "count": 1 },
+        "type": "date_week",
+        "user_attribute_filter_types": ["datetime", "advanced_filter_datetime"],
+        "value_format": null,
+        "view": "order_items",
+        "view_label": "Order Items",
+        "week_start_day": "monday",
+        "times_used": 0,
+        "original_view": "order_items",
+        "sorted": null,
+        "synonyms": []
+      }
+    ],
+    "measures": [
+      {
+        "align": "right",
+        "can_filter": true,
+        "can_time_filter": false,
+        "category": "measure",
+        "default_filter_value": null,
+        "description": "Total revenue from order items",
+        "dimension_group": null,
+        "dynamic": false,
+        "enumerations": null,
+        "error": null,
+        "field_group_label": null,
+        "field_group_variant": "Total Sale Price",
+        "fill_style": null,
+        "filters": null,
+        "fiscal_month_offset": 0,
+        "has_allowed_values": false,
+        "hidden": false,
+        "is_filter": false,
+        "is_fiscal": false,
+        "is_numeric": true,
+        "is_timeframe": null,
+        "label": "Order Items Total Sale Price",
+        "label_from_parameter": null,
+        "label_short": "Total Sale Price",
+        "lookml_link": "/projects/thelook_ecomm/files/views%2F01_order_items.view.lkml?line=323",
+        "map_layer": null,
+        "measure": true,
+        "name": "order_items.total_sale_price",
+        "parameter": false,
+        "permanent": null,
+        "primary_key": false,
+        "project_name": "thelook_ecomm",
+        "requires_refresh_on_sort": false,
+        "scope": "order_items",
+        "sortable": true,
+        "source_file": "views/01_order_items.view.lkml",
+        "source_file_path": "thelook_ecomm/views/01_order_items.view.lkml",
+        "sql": "${sale_price} ",
+        "sql_case": null,
+        "strict_value_format": false,
+        "suggest_dimension": "order_items.total_sale_price",
+        "suggest_explore": "order_items",
+        "suggestable": false,
+        "suggestions": null,
+        "tags": [],
+        "time_interval": null,
+        "type": "sum",
+        "user_attribute_filter_types": ["number", "advanced_filter_number"],
+        "value_format": "$#,##0.00",
+        "view": "order_items",
+        "view_label": "Order Items",
+        "week_start_day": "monday",
+        "times_used": 0,
+        "original_view": "order_items",
+        "sorted": null,
+        "synonyms": []
+      }
+    ],
+    "pivots": [],
+    "table_calculations": []
+  },
+  "fill_fields": [],
+  "from_cache": null,
+  "has_row_totals": false,
+  "has_totals": false,
+  "name": null,
+  "number_format": null,
+  "null_sort_treatment": null,
+  "pivot_hack_undone": null,
+  "ran_at": null,
+  "runtime": "",
+  "sql": "-- Did not use order_items::rollup__products_brand__products_category__products_item_name; it does not include the following fields in the query: order_items.created_week, order_items.total_sale_price\nSELECT\n    (FORMAT_TIMESTAMP('%F', TIMESTAMP_TRUNC(order_items.created_at , WEEK(MONDAY)))) AS order_items_created_week,\n    COALESCE(SUM(order_items.sale_price), 0) AS order_items_total_sale_price\nFROM looker-private-demo.ecomm.order_items  AS order_items\nFULL OUTER JOIN looker-private-demo.ecomm.inventory_items  AS inventory_items ON inventory_items.id = order_items.inventory_item_id\nLEFT JOIN looker-private-demo.ecomm.products  AS products ON products.id = inventory_items.product_id\nWHERE ((( order_items.created_at  ) IS NOT NULL)) AND LENGTH(TRIM(products.brand) ) <> 0 AND (TRIM(products.brand) ) IS NOT NULL\nGROUP BY\n    1",
+  "sql_explain": null,
+  "sql_error": null,
+  "supports_pivot_in_db": null,
+  "timezone": "UTC",
+  "totals_data": null,
+  "truncated": null,
+  "warnings": null,
+  "data": [
+    {
+      "order_items.created_week": { "value": "2022-12-26" },
+      "order_items.total_sale_price": { "value": 2499.45001411438 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-01-02" },
+      "order_items.total_sale_price": { "value": 9789.130036830902 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-01-09" },
+      "order_items.total_sale_price": { "value": 10780.460053920746 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-01-16" },
+      "order_items.total_sale_price": { "value": 11725.980043888092 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-01-23" },
+      "order_items.total_sale_price": { "value": 11087.460058450699 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-01-30" },
+      "order_items.total_sale_price": { "value": 15306.880026578903 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-02-06" },
+      "order_items.total_sale_price": { "value": 12724.380078792572 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-02-13" },
+      "order_items.total_sale_price": { "value": 15837.320029258728 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-02-20" },
+      "order_items.total_sale_price": { "value": 14582.76007258892 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-02-27" },
+      "order_items.total_sale_price": { "value": 14843.110026836395 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-03-06" },
+      "order_items.total_sale_price": { "value": 15652.090067863464 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-03-13" },
+      "order_items.total_sale_price": { "value": 15668.380042433739 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-03-20" },
+      "order_items.total_sale_price": { "value": 15281.620066165924 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-03-27" },
+      "order_items.total_sale_price": { "value": 19217.220074653625 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-04-03" },
+      "order_items.total_sale_price": { "value": 21229.45011138916 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-04-10" },
+      "order_items.total_sale_price": { "value": 21112.6100628376 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-04-17" },
+      "order_items.total_sale_price": { "value": 17069.580077171326 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-04-24" },
+      "order_items.total_sale_price": { "value": 20961.73006761074 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-05-01" },
+      "order_items.total_sale_price": { "value": 18019.840091705322 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-05-08" },
+      "order_items.total_sale_price": { "value": 19127.40006327629 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-05-15" },
+      "order_items.total_sale_price": { "value": 19598.860041856766 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-05-22" },
+      "order_items.total_sale_price": { "value": 22564.06006836891 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-05-29" },
+      "order_items.total_sale_price": { "value": 19116.26007246971 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-06-05" },
+      "order_items.total_sale_price": { "value": 21362.37011909485 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-06-12" },
+      "order_items.total_sale_price": { "value": 21610.700067043304 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-06-19" },
+      "order_items.total_sale_price": { "value": 23432.3500944376 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-06-26" },
+      "order_items.total_sale_price": { "value": 21985.620068073273 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-07-03" },
+      "order_items.total_sale_price": { "value": 20847.690066337585 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-07-10" },
+      "order_items.total_sale_price": { "value": 21430.62007498741 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-07-17" },
+      "order_items.total_sale_price": { "value": 22337.480093479156 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-07-24" },
+      "order_items.total_sale_price": { "value": 25692.080075740814 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-07-31" },
+      "order_items.total_sale_price": { "value": 28150.790120601654 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-08-07" },
+      "order_items.total_sale_price": { "value": 25387.44006705284 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-08-14" },
+      "order_items.total_sale_price": { "value": 28723.010097026825 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-08-21" },
+      "order_items.total_sale_price": { "value": 27995.070106744766 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-08-28" },
+      "order_items.total_sale_price": { "value": 28666.300156712532 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-09-04" },
+      "order_items.total_sale_price": { "value": 31280.610099315643 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-09-11" },
+      "order_items.total_sale_price": { "value": 30419.5901157856 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-09-18" },
+      "order_items.total_sale_price": { "value": 31559.820126652718 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-09-25" },
+      "order_items.total_sale_price": { "value": 32711.610134363174 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-10-02" },
+      "order_items.total_sale_price": { "value": 38538.170102357864 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-10-09" },
+      "order_items.total_sale_price": { "value": 33652.13008570671 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-10-16" },
+      "order_items.total_sale_price": { "value": 36744.290127038956 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-10-23" },
+      "order_items.total_sale_price": { "value": 33006.72011399269 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-10-30" },
+      "order_items.total_sale_price": { "value": 35282.590158462524 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-11-06" },
+      "order_items.total_sale_price": { "value": 39278.35011386871 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-11-13" },
+      "order_items.total_sale_price": { "value": 38275.85014438629 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-11-20" },
+      "order_items.total_sale_price": { "value": 40111.790105342865 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-11-27" },
+      "order_items.total_sale_price": { "value": 39214.100098490715 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-12-04" },
+      "order_items.total_sale_price": { "value": 39312.600167512894 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-12-11" },
+      "order_items.total_sale_price": { "value": 43987.42017579079 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-12-18" },
+      "order_items.total_sale_price": { "value": 40471.290175914764 }
+    },
+    {
+      "order_items.created_week": { "value": "2023-12-25" },
+      "order_items.total_sale_price": { "value": 42547.1601395607 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-01-01" },
+      "order_items.total_sale_price": { "value": 39199.050141334534 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-01-08" },
+      "order_items.total_sale_price": { "value": 38719.69021320343 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-01-15" },
+      "order_items.total_sale_price": { "value": 35448.900163173676 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-01-22" },
+      "order_items.total_sale_price": { "value": 39067.41014242172 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-01-29" },
+      "order_items.total_sale_price": { "value": 40091.94018244743 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-02-05" },
+      "order_items.total_sale_price": { "value": 40801.30013239384 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-02-12" },
+      "order_items.total_sale_price": { "value": 41111.23012816906 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-02-19" },
+      "order_items.total_sale_price": { "value": 42019.87016057968 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-02-26" },
+      "order_items.total_sale_price": { "value": 44029.62013065815 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-03-04" },
+      "order_items.total_sale_price": { "value": 40305.23014378548 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-03-11" },
+      "order_items.total_sale_price": { "value": 43743.57015967369 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-03-18" },
+      "order_items.total_sale_price": { "value": 39726.64014363289 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-03-25" },
+      "order_items.total_sale_price": { "value": 45381.03020477295 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-04-01" },
+      "order_items.total_sale_price": { "value": 42859.76013171673 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-04-08" },
+      "order_items.total_sale_price": { "value": 42961.31019115448 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-04-15" },
+      "order_items.total_sale_price": { "value": 45390.05018091202 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-04-22" },
+      "order_items.total_sale_price": { "value": 46888.71019887924 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-04-29" },
+      "order_items.total_sale_price": { "value": 47262.29014444351 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-05-06" },
+      "order_items.total_sale_price": { "value": 45218.9601688385 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-05-13" },
+      "order_items.total_sale_price": { "value": 44908.69012236595 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-05-20" },
+      "order_items.total_sale_price": { "value": 42554.23016655445 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-05-27" },
+      "order_items.total_sale_price": { "value": 45875.41014790535 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-06-03" },
+      "order_items.total_sale_price": { "value": 53758.23018360138 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-06-10" },
+      "order_items.total_sale_price": { "value": 45587.38023376465 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-06-17" },
+      "order_items.total_sale_price": { "value": 46776.97010087967 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-06-24" },
+      "order_items.total_sale_price": { "value": 48492.63023388386 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-07-01" },
+      "order_items.total_sale_price": { "value": 42820.2201869674 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-07-08" },
+      "order_items.total_sale_price": { "value": 49767.960173010826 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-07-15" },
+      "order_items.total_sale_price": { "value": 48015.98019647598 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-07-22" },
+      "order_items.total_sale_price": { "value": 45617.82017660141 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-07-29" },
+      "order_items.total_sale_price": { "value": 46792.49014234543 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-08-05" },
+      "order_items.total_sale_price": { "value": 46831.99022758007 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-08-12" },
+      "order_items.total_sale_price": { "value": 53678.50020170212 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-08-19" },
+      "order_items.total_sale_price": { "value": 52917.51023161411 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-08-26" },
+      "order_items.total_sale_price": { "value": 50193.970160484314 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-09-02" },
+      "order_items.total_sale_price": { "value": 54361.31017410755 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-09-09" },
+      "order_items.total_sale_price": { "value": 57917.3702082634 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-09-16" },
+      "order_items.total_sale_price": { "value": 54842.49020373821 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-09-23" },
+      "order_items.total_sale_price": { "value": 57146.88021993637 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-09-30" },
+      "order_items.total_sale_price": { "value": 57735.4002610445 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-10-07" },
+      "order_items.total_sale_price": { "value": 59615.8402929306 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-10-14" },
+      "order_items.total_sale_price": { "value": 59998.51023006439 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-10-21" },
+      "order_items.total_sale_price": { "value": 57104.87022304535 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-10-28" },
+      "order_items.total_sale_price": { "value": 60766.14020442963 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-11-04" },
+      "order_items.total_sale_price": { "value": 63506.08022522926 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-11-11" },
+      "order_items.total_sale_price": { "value": 63190.66029167175 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-11-18" },
+      "order_items.total_sale_price": { "value": 66264.5902121067 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-11-25" },
+      "order_items.total_sale_price": { "value": 64925.84025120735 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-12-02" },
+      "order_items.total_sale_price": { "value": 69692.5502730608 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-12-09" },
+      "order_items.total_sale_price": { "value": 71538.4502735138 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-12-16" },
+      "order_items.total_sale_price": { "value": 63320.1702337265 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-12-23" },
+      "order_items.total_sale_price": { "value": 64341.93018293381 }
+    },
+    {
+      "order_items.created_week": { "value": "2024-12-30" },
+      "order_items.total_sale_price": { "value": 63918.630224466324 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-01-06" },
+      "order_items.total_sale_price": { "value": 61042.02020740509 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-01-13" },
+      "order_items.total_sale_price": { "value": 63515.79023051262 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-01-20" },
+      "order_items.total_sale_price": { "value": 56345.890234947205 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-01-27" },
+      "order_items.total_sale_price": { "value": 60395.25022494793 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-02-03" },
+      "order_items.total_sale_price": { "value": 64485.270298957825 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-02-10" },
+      "order_items.total_sale_price": { "value": 65296.4201900959 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-02-17" },
+      "order_items.total_sale_price": { "value": 66349.39027392864 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-02-24" },
+      "order_items.total_sale_price": { "value": 65866.6902897358 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-03-03" },
+      "order_items.total_sale_price": { "value": 68675.76024341583 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-03-10" },
+      "order_items.total_sale_price": { "value": 63404.130230784416 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-03-17" },
+      "order_items.total_sale_price": { "value": 67058.70030283928 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-03-24" },
+      "order_items.total_sale_price": { "value": 60214.04021906853 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-03-31" },
+      "order_items.total_sale_price": { "value": 67922.43023252487 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-04-07" },
+      "order_items.total_sale_price": { "value": 64956.680300593376 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-04-14" },
+      "order_items.total_sale_price": { "value": 68644.28021740913 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-04-21" },
+      "order_items.total_sale_price": { "value": 70649.94026708603 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-04-28" },
+      "order_items.total_sale_price": { "value": 73909.07031726837 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-05-05" },
+      "order_items.total_sale_price": { "value": 64490.920258402824 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-05-12" },
+      "order_items.total_sale_price": { "value": 66514.61026871204 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-05-19" },
+      "order_items.total_sale_price": { "value": 71607.87027692795 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-05-26" },
+      "order_items.total_sale_price": { "value": 70964.84024608135 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-06-02" },
+      "order_items.total_sale_price": { "value": 66244.53024959564 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-06-09" },
+      "order_items.total_sale_price": { "value": 67427.77030014992 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-06-16" },
+      "order_items.total_sale_price": { "value": 67045.25022006035 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-06-23" },
+      "order_items.total_sale_price": { "value": 70213.5502986908 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-06-30" },
+      "order_items.total_sale_price": { "value": 72271.67028963566 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-07-07" },
+      "order_items.total_sale_price": { "value": 66827.20029187202 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-07-14" },
+      "order_items.total_sale_price": { "value": 70150.31025362015 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-07-21" },
+      "order_items.total_sale_price": { "value": 66657.37031292915 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-07-28" },
+      "order_items.total_sale_price": { "value": 75411.80025756359 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-08-04" },
+      "order_items.total_sale_price": { "value": 77989.52031433582 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-08-11" },
+      "order_items.total_sale_price": { "value": 75189.91037940979 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-08-18" },
+      "order_items.total_sale_price": { "value": 71586.21028161049 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-08-25" },
+      "order_items.total_sale_price": { "value": 65475.52029442787 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-09-01" },
+      "order_items.total_sale_price": { "value": 75598.23038887978 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-09-08" },
+      "order_items.total_sale_price": { "value": 80341.65031576157 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-09-15" },
+      "order_items.total_sale_price": { "value": 77490.29027342796 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-09-22" },
+      "order_items.total_sale_price": { "value": 84792.75030136108 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-09-29" },
+      "order_items.total_sale_price": { "value": 76279.48022651672 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-10-06" },
+      "order_items.total_sale_price": { "value": 82567.44029068947 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-10-13" },
+      "order_items.total_sale_price": { "value": 86317.1902359724 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-10-20" },
+      "order_items.total_sale_price": { "value": 87162.7203155756 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-10-27" },
+      "order_items.total_sale_price": { "value": 83433.6603269577 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-11-03" },
+      "order_items.total_sale_price": { "value": 86808.94029307365 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-11-10" },
+      "order_items.total_sale_price": { "value": 88339.89038348198 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-11-17" },
+      "order_items.total_sale_price": { "value": 86451.9804366827 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-11-24" },
+      "order_items.total_sale_price": { "value": 84682.64038074017 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-12-01" },
+      "order_items.total_sale_price": { "value": 89578.26036989689 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-12-08" },
+      "order_items.total_sale_price": { "value": 95604.78030109406 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-12-15" },
+      "order_items.total_sale_price": { "value": 96869.79031968117 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-12-22" },
+      "order_items.total_sale_price": { "value": 97018.34035754204 }
+    },
+    {
+      "order_items.created_week": { "value": "2025-12-29" },
+      "order_items.total_sale_price": { "value": 89344.03036165237 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-01-05" },
+      "order_items.total_sale_price": { "value": 90640.19038593769 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-01-12" },
+      "order_items.total_sale_price": { "value": 99393.44034862518 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-01-19" },
+      "order_items.total_sale_price": { "value": 90467.44025468826 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-01-26" },
+      "order_items.total_sale_price": { "value": 89349.02034235 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-02-02" },
+      "order_items.total_sale_price": { "value": 99286.25041353703 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-02-09" },
+      "order_items.total_sale_price": { "value": 97016.82035064697 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-02-16" },
+      "order_items.total_sale_price": { "value": 98764.9903037548 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-02-23" },
+      "order_items.total_sale_price": { "value": 96178.25035095215 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-03-02" },
+      "order_items.total_sale_price": { "value": 96818.53033924103 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-03-09" },
+      "order_items.total_sale_price": { "value": 93066.49033403397 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-03-16" },
+      "order_items.total_sale_price": { "value": 98788.64037799835 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-03-23" },
+      "order_items.total_sale_price": { "value": 99687.84039258957 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-03-30" },
+      "order_items.total_sale_price": { "value": 98219.8503267765 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-04-06" },
+      "order_items.total_sale_price": { "value": 96999.18039369583 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-04-13" },
+      "order_items.total_sale_price": { "value": 95981.00044035912 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-04-20" },
+      "order_items.total_sale_price": { "value": 106174.65039038658 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-04-27" },
+      "order_items.total_sale_price": { "value": 105982.48033738136 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-05-04" },
+      "order_items.total_sale_price": { "value": 100518.75039076805 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-05-11" },
+      "order_items.total_sale_price": { "value": 100791.50030708313 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-05-18" },
+      "order_items.total_sale_price": { "value": 103509.16035974026 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-05-25" },
+      "order_items.total_sale_price": { "value": 98428.91036295891 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-06-01" },
+      "order_items.total_sale_price": { "value": 101681.32038235664 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-06-08" },
+      "order_items.total_sale_price": { "value": 100650.19037628174 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-06-15" },
+      "order_items.total_sale_price": { "value": 100389.16034221649 }
+    },
+    {
+      "order_items.created_week": { "value": "2026-06-22" },
+      "order_items.total_sale_price": { "value": 25530.3300948143 }
+    }
+  ]
+}

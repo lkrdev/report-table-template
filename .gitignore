@@ -1,0 +1,66 @@
+# Dependency Directories
+node_modules/
+.venv/
+venv/
+
+# Python Caching & Tools
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ruff_cache/
+.pytest_cache/
+
+# Logs and Runtime Data
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Test and Coverage
+coverage
+.nyc_output
+
+# Build and Package Output
+dist/
+build/
+*.tgz
+.yarn-integrity
+
+# Configurations and Cache
+.env
+.npm
+.eslintcache
+.node_repl_history
+
+# Editor and OS-specific
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# ActionHub Specifics
+status.json
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+lib
+tmp
